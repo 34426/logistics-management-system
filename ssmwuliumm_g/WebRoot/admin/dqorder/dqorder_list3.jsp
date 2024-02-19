@@ -1,0 +1,183 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+<%@include file="/common/taglibs.jsp"%>
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" href="<%=path%>/resource/bootstrap3/css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="<%=path%>/resource/bootstrap3/css/bootstrap-theme.min.css"/>
+		<script src="<%=path%>/bootstrap3/resource/js/jquery-1.11.2.min.js"></script>
+		<script src="<%=path%>/bootstrap3/resource/js/bootstrap.min.js"></script>
+				<!-- 日期控件 -->
+		<script src="<%=path%>/resource/My97DatePicker/WdatePicker.js"></script>
+		<script language="javascript">
+           function DqorderDel(id)
+           {
+               if(confirm('您确定删除吗？'))
+               {
+                   window.location.href="<%=path %>/dqorder/del.action?id="+id;
+               }
+           }
+           
+           function DqorderEdit(id)
+           {
+							window.location.href="<%=path %>/dqorder/edit.action?id="+id;
+           }
+           
+           
+                      function Dqorderpingjia1(id)
+           {
+							window.location.href="<%=path %>/dqorder/pingjia1.action?id="+id;
+           }
+           
+                    function Dqorderpingjia2(id)
+           {
+							window.location.href="<%=path %>/dqorder/pingjia2.action?id="+id;
+           }
+           
+           function DqorderAdd()
+           {
+                 var url="<%=path %>/dqorder/add.action";
+				 				 window.location.href=url;
+           }
+       </script>
+	</head>
+
+	<body>
+		<div class="col-lg-12">
+			<div>
+				<ol class="breadcrumb">
+					<li><span class="glyphicon glyphicon-home"></span>&nbsp;<a
+						href="#">主页</a></li>
+					<li class="active">代取件信息管理</li>
+				</ol>
+			</div>
+		<!-- 数据表格-->
+		<div>
+				<table class="table table-hover  table-bordered table-striped" style="margin-bottom: 0px;">
+					<tr>
+						<td>ID</td>
+						<td>快递编号</td>
+						<td>快递描述</td>
+						<td>用户名</td>
+						<td>联系电话</td>
+						<td>时间</td>
+						<td>状态</td>
+						<td>送物品人员名称</td>
+						<td>送物品人员电话</td>
+						<td>客户评价</td>
+						<td>快递员评价</td>
+							<td>客户评分</td>
+						<td>快递员评分</td>
+						<td>操作</td>
+			        </tr>	
+					<c:forEach items="${pagers.datas}" var="Dqorder">
+					<tr>
+						
+						<td bgcolor="#FFFFFF" align="center">
+							${Dqorder.id}
+						</td>
+						<td bgcolor="#FFFFFF" align="center">
+							${Dqorder.orderno}
+						</td>
+						<td bgcolor="#FFFFFF" align="center">
+							${Dqorder.content}
+						</td>
+						<td bgcolor="#FFFFFF" align="center">
+							${Dqorder.username}
+						</td>
+						<td bgcolor="#FFFFFF" align="center">
+							${Dqorder.userphone}
+						</td>
+						<td bgcolor="#FFFFFF" align="center">
+							${Dqorder.shijian}
+						</td>
+						<td bgcolor="#FFFFFF" align="center">
+							<font color="red">
+							<c:if test="${Dqorder.status == 0}">未接单</c:if>
+							<c:if test="${Dqorder.status == 1}">已接单</c:if>
+							<c:if test="${Dqorder.status == 2}">已收货评价</c:if>
+							<c:if test="${Dqorder.status == 3}">对方评价</c:if>
+							
+							</font>
+						</td>
+						<td bgcolor="#FFFFFF" align="center">
+							${Dqorder.yname}
+						</td>
+						<td bgcolor="#FFFFFF" align="center">
+							${Dqorder.yphone}
+						</td>
+						<td bgcolor="#FFFFFF" align="center">
+							${Dqorder.pingjia}
+						</td>
+						<td bgcolor="#FFFFFF" align="center">
+							${Dqorder.pingjia2}
+						</td>
+						<td bgcolor="#FFFFFF" align="center">
+							${Dqorder.pingfen}
+						</td>
+						<td bgcolor="#FFFFFF" align="center">
+							${Dqorder.pingfen2}
+						</td>
+						<td>
+							<c:if test="${sessionScope.userType == 2 &&  Dqorder.status == 0 && Dqorder.userid != sessionScope.user.id}">
+							<button type="button" class="btn btn-info btn-xs" onclick="DqorderEdit(${Dqorder.id})"><span class="icon-edit text-blue"></span>接单</button>
+							</c:if>
+							<button type="button" class="btn btn-info btn-xs" onclick="Dqorderpingjia1(${Dqorder.id})"><span class="icon-edit text-blue"></span>评价</button>
+							
+							<c:if test="${Dqorder.status == 2 && Dqorder.yid == sessionScope.user.id}">
+							<button type="button" class="btn btn-info btn-xs" onclick="Dqorderpingjia2(${Dqorder.id})"><span class="icon-edit text-blue"></span>评价</button>
+							</c:if>
+						</td>
+					</tr>
+					</c:forEach>
+				</table>
+				<!-- 分页 -->
+				<nav>
+					<ul class="pagination">
+				      <pg:pager  url="${ctx}/dqorder/list.action" maxIndexPages="5" items="${pagers.total}"  maxPageItems="15" export="curPage=pageNumber" >
+						<pg:param name="name" value="${name}"/>
+						<pg:last>  
+							<font color="black">共${pagers.total}记录,共${pageNumber}页, </font> 
+						</pg:last>  
+							<font color="black">当前第${curPage}页 </font> 
+				        <pg:first>  
+				            <li><a href="${pageUrl}">首页</a></li>
+						</pg:first>  
+						<pg:prev>  
+				    		<li><a href="${pageUrl}">上一页</a></li>
+						</pg:prev>  
+				       	<pg:pages>  
+				        	<c:choose>  
+				            	<c:when test="${curPage eq pageNumber}">  
+				                	<li><a href="#"><font color="red">${pageNumber }</font> </a></li> 
+				            	</c:when>  
+				            	<c:otherwise>  
+				               		<li><a href="${pageUrl}">${pageNumber}</a></li> 
+				            	</c:otherwise>  
+				        	</c:choose>  
+				    	</pg:pages>
+				             
+				        <pg:next>  
+				    		<li><a href="${pageUrl}">下一页</a></li>
+						</pg:next>  
+						<pg:last>  
+							<c:choose>  
+				            	<c:when test="${curPage eq pageNumber}">  
+				                	<li><a href="#"><font color="red">尾页</font></a></li>
+				            	</c:when>  
+				            	<c:otherwise>  
+				               		<li><a href="${pageUrl}">尾页</a></li>
+				            	</c:otherwise>  
+				        	</c:choose> 
+						</pg:last>
+					</pg:pager>							
+					</ul>
+				</nav>
+				<!-- 分页 -->					
+		</div>
+	</div>		
+	</body>
+</html>
